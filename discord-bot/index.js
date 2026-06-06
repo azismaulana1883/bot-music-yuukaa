@@ -242,14 +242,28 @@ async function playNext(guildId) {
         console.log(`Streaming via yt-dlp+ffmpeg pipe: ${youtubeUrl}`);
 
         // Step 1: yt-dlp downloads best audio and pipes to stdout
-        const ytdlpProc = spawn(ytdlpPath, [
+        const ytdlpArgs = [
             youtubeUrl,
             '-f', 'bestaudio/best',
             '--no-playlist',
             '-o', '-',
             '--quiet',
             '--no-warnings',
-        ], { stdio: ['ignore', 'pipe', 'ignore'] });
+        ];
+
+        // Auto-detect cookies.txt in bot directory or parent directory
+        const localCookiesPath = path.join(path.resolve(), 'cookies.txt');
+        const parentCookiesPath = path.join(path.resolve(), '..', 'cookies.txt');
+        
+        if (fs.existsSync(localCookiesPath)) {
+            ytdlpArgs.push('--cookies', localCookiesPath);
+        } else if (fs.existsSync(parentCookiesPath)) {
+            ytdlpArgs.push('--cookies', parentCookiesPath);
+        } else if (process.env.YT_DLP_COOKIES_FROM_BROWSER) {
+            ytdlpArgs.push('--cookies-from-browser', process.env.YT_DLP_COOKIES_FROM_BROWSER);
+        }
+
+        const ytdlpProc = spawn(ytdlpPath, ytdlpArgs, { stdio: ['ignore', 'pipe', 'pipe'] });
 
         // Step 2: ffmpeg re-encodes to opus/pcm so @discordjs/voice can play it
         const ffmpegProc = spawn(ffmpeg, [
@@ -260,7 +274,7 @@ async function playNext(guildId) {
             '-ar', '48000',          // 48kHz sample rate (Discord requires this)
             '-ac', '2',              // stereo
             'pipe:1'                 // output to stdout
-        ], { stdio: ['pipe', 'pipe', 'ignore'] });
+        ], { stdio: ['pipe', 'pipe', 'pipe'] });
 
         // Pipe yt-dlp → ffmpeg
         ytdlpProc.stdout.pipe(ffmpegProc.stdin);
@@ -280,6 +294,17 @@ async function playNext(guildId) {
             if (err.code !== 'EPIPE' && err.code !== 'ECONNRESET') {
                 console.error(`ffmpeg stdout error in guild ${guildId}:`, err.message);
             }
+        });
+
+        // Capture and log stderr output to diagnose YouTube bot blocking/errors
+        ytdlpProc.stderr.on('data', data => {
+            const msg = data.toString().trim();
+            if (msg) console.error(`[yt-dlp stderr] [Guild ${guildId}]: ${msg}`);
+        });
+
+        ffmpegProc.stderr.on('data', data => {
+            const msg = data.toString().trim();
+            if (msg) console.error(`[ffmpeg stderr] [Guild ${guildId}]: ${msg}`);
         });
 
         // Handle yt-dlp errors
@@ -810,7 +835,7 @@ app.get('/api/search', async (req, res) => {
     }
 
     try {
-        const tracks = await resolveQuery(query, 'Standalone User');
+        const tracks = await resolveQuery(query, 'Yuukaa User');
         res.json({ success: true, tracks });
     } catch (err) {
         console.error('API Search Error:', err.message);
@@ -849,14 +874,28 @@ app.get('/api/stream', async (req, res) => {
         res.setHeader('Transfer-Encoding', 'chunked');
 
         // Spawn yt-dlp to download best audio
-        const ytdlpProc = spawn(ytdlpPath, [
+        const ytdlpArgs = [
             url,
             '-f', 'bestaudio/best',
             '--no-playlist',
             '-o', '-',
             '--quiet',
             '--no-warnings'
-        ], { stdio: ['ignore', 'pipe', 'ignore'] });
+        ];
+
+        // Auto-detect cookies.txt in bot directory or parent directory
+        const localCookiesPath = path.join(path.resolve(), 'cookies.txt');
+        const parentCookiesPath = path.join(path.resolve(), '..', 'cookies.txt');
+        
+        if (fs.existsSync(localCookiesPath)) {
+            ytdlpArgs.push('--cookies', localCookiesPath);
+        } else if (fs.existsSync(parentCookiesPath)) {
+            ytdlpArgs.push('--cookies', parentCookiesPath);
+        } else if (process.env.YT_DLP_COOKIES_FROM_BROWSER) {
+            ytdlpArgs.push('--cookies-from-browser', process.env.YT_DLP_COOKIES_FROM_BROWSER);
+        }
+
+        const ytdlpProc = spawn(ytdlpPath, ytdlpArgs, { stdio: ['ignore', 'pipe', 'pipe'] });
 
         // Spawn ffmpeg to convert to mp3
         const ffmpegProc = spawn(ffmpeg, [
@@ -865,7 +904,7 @@ app.get('/api/stream', async (req, res) => {
             '-acodec', 'libmp3lame',
             '-ab', '128k',
             'pipe:1'
-        ], { stdio: ['pipe', 'pipe', 'ignore'] });
+        ], { stdio: ['pipe', 'pipe', 'pipe'] });
 
         ytdlpProc.stdout.pipe(ffmpegProc.stdin);
         ffmpegProc.stdout.pipe(res);
@@ -874,6 +913,17 @@ app.get('/api/stream', async (req, res) => {
         ffmpegProc.stdin.on('error', () => {});
         ytdlpProc.stdout.on('error', () => {});
         ffmpegProc.stdout.on('error', () => {});
+
+        // Capture and log stderr output for streaming diagnosis
+        ytdlpProc.stderr.on('data', data => {
+            const msg = data.toString().trim();
+            if (msg) console.error(`[yt-dlp stream stderr]: ${msg}`);
+        });
+
+        ffmpegProc.stderr.on('data', data => {
+            const msg = data.toString().trim();
+            if (msg) console.error(`[ffmpeg stream stderr]: ${msg}`);
+        });
 
         req.on('close', () => {
             try {
