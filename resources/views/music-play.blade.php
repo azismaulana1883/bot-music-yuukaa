@@ -416,7 +416,11 @@
     audio.addEventListener('timeupdate', () => {
         if (currentTrack) {
             playbackTime = Math.floor(audio.currentTime);
-            const duration = Math.floor(audio.duration) || currentTrack.duration;
+            
+            // Fall back to currentTrack.duration if stream is chunked (returns Infinity)
+            const duration = (audio.duration && isFinite(audio.duration)) 
+                ? Math.floor(audio.duration) 
+                : currentTrack.duration;
 
             document.getElementById('progress-time').textContent = formatTime(playbackTime);
             document.getElementById('total-time').textContent = formatTime(duration);
