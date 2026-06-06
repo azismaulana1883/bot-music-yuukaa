@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Standalone Music Player')
+@section('title', 'Yuukaa Music Player')
 
 @section('content')
 <div class="space-y-6">
@@ -13,14 +13,14 @@
                 </svg>
             </div>
             <div>
-                <h1 class="text-2xl font-extrabold text-white tracking-tight">Standalone Music Player</h1>
+                <h1 class="text-2xl font-extrabold text-white tracking-tight">Yuukaa Music Player</h1>
                 <p class="text-xs text-slate-500">Mendengarkan & Kelola Antrean secara Lokal (Tanpa Discord)</p>
             </div>
         </div>
         
         <div class="px-4 py-2 rounded-xl bg-[#0a0814]/80 border border-slate-900 text-sm font-semibold text-violet-400 flex items-center gap-2">
             <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-            Mode Lokal / Standalone
+            Mode Lokal / Yuukaa
         </div>
     </div>
 

@@ -22,7 +22,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/dashboard/guild/{guild_id}/control', [DashboardController::class, 'control'])->name('dashboard.guild.control');
 });
 
-// Standalone Public Music Player Routes
+// Yuukaa Public Music Player Routes
 Route::get('/music-play', function () {
     return view('music-play');
 })->name('music.play');

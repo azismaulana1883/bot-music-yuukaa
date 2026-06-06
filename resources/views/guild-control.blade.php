@@ -261,6 +261,17 @@
                 },
                 body: JSON.stringify({ action, ...data })
             });
+            
+            if (!response.ok) {
+                showNotification(`Gagal: Server merespon dengan status ${response.status}`, 'error');
+                return;
+            }
+            const contentType = response.headers.get('content-type');
+            if (!contentType || !contentType.includes('application/json')) {
+                showNotification('Sesi Anda telah kedaluwarsa. Silakan muat ulang halaman.', 'error');
+                return;
+            }
+            
             const result = await response.json();
             
             if (result.success) {
@@ -323,6 +334,17 @@
     async function fetchStatus() {
         try {
             const response = await fetch(`/dashboard/guild/${guildId}/status`);
+            
+            if (!response.ok) {
+                console.warn(`Fetch status failed with HTTP ${response.status}`);
+                return;
+            }
+            const contentType = response.headers.get('content-type');
+            if (!contentType || !contentType.includes('application/json')) {
+                console.warn('Received non-JSON response from status endpoint, likely session expired.');
+                return;
+            }
+            
             const status = await response.json();
             
             const banner = document.getElementById('bot-offline-banner');
