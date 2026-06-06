@@ -4,6 +4,7 @@ namespace App\Services;
 
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Cache;
 
 class DiscordService
 {
@@ -19,12 +20,23 @@ class DiscordService
      */
     public function getUserGuilds(string $accessToken): array
     {
+        $cacheKey = 'discord_user_guilds_' . md5($accessToken);
+
+        if (Cache::has($cacheKey)) {
+            return Cache::get($cacheKey);
+        }
+
         try {
             $response = Http::withToken($accessToken)
                 ->get('https://discord.com/api/users/@me/guilds');
 
             if ($response->successful()) {
-                return $response->json();
+                $guilds = $response->json();
+                if (is_array($guilds) && !empty($guilds)) {
+                    // Cache the guilds for 60 seconds
+                    Cache::put($cacheKey, $guilds, 60);
+                    return $guilds;
+                }
             }
 
             Log::error('Failed to fetch user guilds from Discord API', [
