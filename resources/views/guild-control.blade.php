@@ -110,6 +110,13 @@
                         </svg>
                     </button>
 
+                    <!-- Previous Button -->
+                    <button onclick="controlAction('previous')" class="p-3 rounded-full bg-violet-950/20 hover:bg-violet-950/40 hover:scale-105 text-violet-300 transition-all duration-300 shadow-md border border-violet-500/20" title="Lagu Sebelumnya">
+                        <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24">
+                            <path d="M11.5 12l8.5 6V6zm-9 6h2V6h-2z"/>
+                        </svg>
+                    </button>
+
                     <!-- Play / Pause Button -->
                     <button id="btn-play-pause" onclick="togglePlayPause()" class="w-14 h-14 rounded-full bg-white hover:bg-violet-50 text-[#030206] hover:scale-105 transition-all duration-300 flex items-center justify-center shadow-lg shadow-violet-500/20" title="Putar / Jeda">
                         <!-- Play Icon -->
