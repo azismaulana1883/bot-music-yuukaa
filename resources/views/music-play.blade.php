@@ -189,6 +189,9 @@
     </div>
 </div>
 
+<!-- Hidden native audio element -->
+<audio id="audio-player" class="hidden"></audio>
+
 <script>
     // State management
     let queue = [];
@@ -197,7 +200,8 @@
     let isPlaying = false;
     let playbackTime = 0;
     let volume = 50;
-    let playbackInterval = null;
+
+    const audio = document.getElementById('audio-player');
 
     // IMPORTANT: Clear localStorage on load/refresh so queue is reset
     localStorage.removeItem('music_play_queue');
@@ -211,11 +215,13 @@
         toast.className = `fixed bottom-6 right-6 px-4 py-3 rounded-xl shadow-2xl z-50 transform translate-y-10 opacity-0 transition-all duration-300 flex items-center gap-2.5 text-sm font-semibold border ${
             type === 'success' 
             ? 'bg-violet-950/95 text-violet-350 border-violet-500/30' 
-            : 'bg-rose-950/95 text-rose-300 border-rose-500/30'
+            : type === 'error'
+            ? 'bg-rose-950/95 text-rose-300 border-rose-500/30'
+            : 'bg-indigo-950/95 text-indigo-350 border-indigo-500/30'
         }`;
         
         toast.innerHTML = `
-            <span class="w-2.5 h-2.5 rounded-full ${type === 'success' ? 'bg-violet-400' : 'bg-rose-450'}"></span>
+            <span class="w-2.5 h-2.5 rounded-full ${type === 'success' ? 'bg-violet-400' : type === 'error' ? 'bg-rose-450' : 'bg-indigo-400'}"></span>
             <span>${message}</span>
         `;
         
@@ -264,6 +270,7 @@
     function changeVolume(val) {
         volume = val;
         document.getElementById('volume-display').textContent = `${val}%`;
+        audio.volume = val / 100;
         saveToStorage();
     }
 
@@ -337,6 +344,14 @@
         playbackTime = 0;
         isPlaying = true;
         
+        // Setup native audio source from local stream server
+        audio.src = `http://localhost:3000/api/stream?url=${encodeURIComponent(track.url)}`;
+        audio.volume = volume / 100;
+        audio.play().catch(err => {
+            console.warn("Playback blocked by browser autoplay policy:", err.message);
+            showNotification("Putar audio diblokir browser. Silakan klik tombol play untuk memulai.", "info");
+        });
+        
         // UI Updates
         document.getElementById('track-title').textContent = track.title;
         document.getElementById('track-artist').textContent = track.artist;
@@ -363,7 +378,6 @@
         document.getElementById('icon-pause').classList.remove('hidden');
 
         updateVisualizer(true);
-        startPlaybackTimer();
         renderQueue();
         saveToStorage();
     }
@@ -381,50 +395,46 @@
 
         isPlaying = !isPlaying;
         if (isPlaying) {
+            audio.play().catch(err => console.warn(err));
             document.getElementById('icon-play').classList.add('hidden');
             document.getElementById('icon-pause').classList.remove('hidden');
             document.getElementById('playing-badge').textContent = 'Sedang Diputar';
             document.getElementById('playing-badge').className = 'px-2.5 py-0.5 rounded-md bg-violet-500/10 border border-violet-500/20 text-xs font-bold text-violet-400 inline-block uppercase tracking-wider shadow-sm';
             updateVisualizer(true);
-            startPlaybackTimer();
         } else {
+            audio.pause();
             document.getElementById('icon-play').classList.remove('hidden');
             document.getElementById('icon-pause').classList.add('hidden');
             document.getElementById('playing-badge').textContent = 'Jeda';
             document.getElementById('playing-badge').className = 'px-2.5 py-0.5 rounded-md bg-amber-500/10 border border-amber-500/20 text-xs font-bold text-amber-500 inline-block uppercase tracking-wider';
             updateVisualizer(false);
-            stopPlaybackTimer();
         }
         saveToStorage();
     }
 
-    // Playback timer ticker
-    function startPlaybackTimer() {
-        stopPlaybackTimer(); // Clear any existing
-        playbackInterval = setInterval(() => {
-            if (isPlaying && currentTrack) {
-                playbackTime++;
-                
-                // Update slider/times
-                document.getElementById('progress-time').textContent = formatTime(playbackTime);
-                document.getElementById('total-time').textContent = formatTime(currentTrack.duration);
-                
-                const percent = (playbackTime / currentTrack.duration) * 100;
-                document.getElementById('progress-bar-fill').style.width = `${percent}%`;
+    // Native Audio Event Listeners
+    audio.addEventListener('timeupdate', () => {
+        if (currentTrack) {
+            playbackTime = Math.floor(audio.currentTime);
+            const duration = Math.floor(audio.duration) || currentTrack.duration;
 
-                if (playbackTime >= currentTrack.duration) {
-                    playNext();
-                }
-            }
-        }, 1000);
-    }
-
-    function stopPlaybackTimer() {
-        if (playbackInterval) {
-            clearInterval(playbackInterval);
-            playbackInterval = null;
+            document.getElementById('progress-time').textContent = formatTime(playbackTime);
+            document.getElementById('total-time').textContent = formatTime(duration);
+            
+            const percent = duration > 0 ? (playbackTime / duration) * 100 : 0;
+            document.getElementById('progress-bar-fill').style.width = `${percent}%`;
         }
-    }
+    });
+
+    audio.addEventListener('ended', () => {
+        playNext();
+    });
+
+    audio.addEventListener('error', (e) => {
+        console.error("Audio streaming error:", e);
+        showNotification("Gagal memuat streaming audio dari server.", "error");
+        playNext(); // Skip to next track on error
+    });
 
     // Play next track (Skip)
     function playNext() {
@@ -456,7 +466,8 @@
         isPlaying = false;
         currentTrack = null;
         playbackTime = 0;
-        stopPlaybackTimer();
+        audio.pause();
+        audio.src = '';
 
         // Reset UI
         document.getElementById('track-title').textContent = 'Tidak ada lagu diputar';

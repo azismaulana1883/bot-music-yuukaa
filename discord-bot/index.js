@@ -785,6 +785,17 @@ client.on('interactionCreate', async interaction => {
 const app = express();
 app.use(express.json());
 
+// Enable CORS for frontend requests
+app.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    if (req.method === 'OPTIONS') {
+        return res.sendStatus(200);
+    }
+    next();
+});
+
 // Get guilds the bot is currently in
 app.get('/api/guilds', (req, res) => {
     const ids = client.guilds.cache.map(g => g.id);
@@ -804,6 +815,79 @@ app.get('/api/search', async (req, res) => {
     } catch (err) {
         console.error('API Search Error:', err.message);
         res.status(500).json({ success: false, error: err.message });
+    }
+});
+
+// Stream audio directly to browser (MP3 transcode)
+app.get('/api/stream', async (req, res) => {
+    let { url } = req.query;
+    if (!url) {
+        return res.status(400).json({ success: false, error: 'URL parameter is required' });
+    }
+
+    try {
+        // Resolve Spotify URLs to YouTube stream URLs
+        if (url.includes('spotify.com')) {
+            try {
+                if (play.is_expired()) {
+                    await play.refreshToken();
+                }
+                const spotifyData = await play.spotify(url);
+                const searchTitle = `${spotifyData.name} ${spotifyData.artists?.map(a => a.name).join(', ') || ''}`;
+                const ytResults = await play.search(searchTitle, { limit: 1 });
+                if (ytResults.length > 0) {
+                    url = ytResults[0].url;
+                } else {
+                    console.warn(`Could not resolve Spotify URL to YouTube: ${url}`);
+                }
+            } catch (err) {
+                console.error('Spotify stream resolution failed:', err.message);
+            }
+        }
+
+        res.setHeader('Content-Type', 'audio/mpeg');
+        res.setHeader('Transfer-Encoding', 'chunked');
+
+        // Spawn yt-dlp to download best audio
+        const ytdlpProc = spawn(ytdlpPath, [
+            url,
+            '-f', 'bestaudio/best',
+            '--no-playlist',
+            '-o', '-',
+            '--quiet',
+            '--no-warnings'
+        ], { stdio: ['ignore', 'pipe', 'ignore'] });
+
+        // Spawn ffmpeg to convert to mp3
+        const ffmpegProc = spawn(ffmpeg, [
+            '-i', 'pipe:0',
+            '-f', 'mp3',
+            '-acodec', 'libmp3lame',
+            '-ab', '128k',
+            'pipe:1'
+        ], { stdio: ['pipe', 'pipe', 'ignore'] });
+
+        ytdlpProc.stdout.pipe(ffmpegProc.stdin);
+        ffmpegProc.stdout.pipe(res);
+
+        // Handle errors and clean up to prevent process leak
+        ffmpegProc.stdin.on('error', () => {});
+        ytdlpProc.stdout.on('error', () => {});
+        ffmpegProc.stdout.on('error', () => {});
+
+        req.on('close', () => {
+            try {
+                ytdlpProc.stdout.unpipe(ffmpegProc.stdin);
+                ytdlpProc.kill('SIGKILL');
+                ffmpegProc.kill('SIGKILL');
+            } catch (err) {}
+        });
+
+    } catch (error) {
+        console.error('Streaming error:', error.message);
+        if (!res.headersSent) {
+            res.status(500).json({ success: false, error: error.message });
+        }
     }
 });
 
