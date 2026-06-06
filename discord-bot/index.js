@@ -565,45 +565,45 @@ async function searchSpotifyTrack(query) {
     throw new Error('Lagu tidak ditemukan di Spotify maupun YouTube.');
 }
 
+// Define Discord Slash Commands List
+const commandsList = [
+    new SlashCommandBuilder()
+        .setName('play')
+        .setDescription('Memutar musik dari Spotify atau YouTube')
+        .addStringOption(option => 
+            option.setName('query')
+                .setDescription('Judul lagu atau tautan Spotify/YouTube')
+                .setRequired(true)),
+    new SlashCommandBuilder().setName('skip').setDescription('⏭️ [Owner] Melewati lagu yang sedang diputar'),
+    new SlashCommandBuilder().setName('previous').setDescription('⏮️ [Owner] Kembali ke lagu sebelumnya'),
+    new SlashCommandBuilder().setName('pause').setDescription('Menjeda lagu yang sedang diputar'),
+    new SlashCommandBuilder().setName('resume').setDescription('Melanjutkan pemutaran lagu'),
+    new SlashCommandBuilder().setName('stop').setDescription('Menghentikan pemutaran musik dan mengosongkan antrean'),
+    new SlashCommandBuilder().setName('quit-bot').setDescription('Mengeluarkan bot dari voice channel'),
+    new SlashCommandBuilder()
+        .setName('queue')
+        .setDescription('Lihat atau hapus antrean lagu')
+        .addSubcommand(subcommand =>
+            subcommand
+                .setName('list')
+                .setDescription('Menampilkan antrean lagu saat ini')
+        )
+        .addSubcommand(subcommand =>
+            subcommand
+                .setName('delete')
+                .setDescription('Menghapus lagu dari antrean')
+                .addIntegerOption(option =>
+                    option
+                        .setName('nomor')
+                        .setDescription('Nomor lagu di antrean (mulai dari 1)')
+                        .setRequired(true)
+                )
+        )
+].map(command => command.toJSON());
+
 // Discord Client Ready
 client.once('ready', async () => {
     console.log(`Logged in as ${client.user.tag}!`);
-
-    // Register Discord Slash Commands
-    const commands = [
-        new SlashCommandBuilder()
-            .setName('play')
-            .setDescription('Memutar musik dari Spotify atau YouTube')
-            .addStringOption(option => 
-                option.setName('query')
-                    .setDescription('Judul lagu atau tautan Spotify/YouTube')
-                    .setRequired(true)),
-        new SlashCommandBuilder().setName('skip').setDescription('⏭️ [Owner] Melewati lagu yang sedang diputar'),
-        new SlashCommandBuilder().setName('previous').setDescription('⏮️ [Owner] Kembali ke lagu sebelumnya'),
-        new SlashCommandBuilder().setName('pause').setDescription('Menjeda lagu yang sedang diputar'),
-        new SlashCommandBuilder().setName('resume').setDescription('Melanjutkan pemutaran lagu'),
-        new SlashCommandBuilder().setName('stop').setDescription('Menghentikan pemutaran musik dan mengosongkan antrean'),
-        new SlashCommandBuilder().setName('quit-bot').setDescription('Mengeluarkan bot dari voice channel'),
-        new SlashCommandBuilder()
-            .setName('queue')
-            .setDescription('Lihat atau hapus antrean lagu')
-            .addSubcommand(subcommand =>
-                subcommand
-                    .setName('list')
-                    .setDescription('Menampilkan antrean lagu saat ini')
-            )
-            .addSubcommand(subcommand =>
-                subcommand
-                    .setName('delete')
-                    .setDescription('Menghapus lagu dari antrean')
-                    .addIntegerOption(option =>
-                        option
-                            .setName('nomor')
-                            .setDescription('Nomor lagu di antrean (mulai dari 1)')
-                            .setRequired(true)
-                    )
-            )
-    ].map(command => command.toJSON());
 
     const rest = new REST({ version: '10' }).setToken(TOKEN);
 
@@ -618,7 +618,7 @@ client.once('ready', async () => {
         const guilds = client.guilds.cache.map(g => g.id);
         for (const guildId of guilds) {
             try {
-                await rest.put(Routes.applicationGuildCommands(CLIENT_ID, guildId), { body: commands });
+                await rest.put(Routes.applicationGuildCommands(CLIENT_ID, guildId), { body: commandsList });
                 console.log(`✅ Commands registered for guild: ${guildId}`);
             } catch (guildError) {
                 console.error(`Failed to register commands for guild ${guildId}:`, guildError.message);
@@ -626,6 +626,18 @@ client.once('ready', async () => {
         }
     } catch (error) {
         console.error('Failed to register slash commands:', error.message);
+    }
+});
+
+// Register commands instantly when the bot joins a new guild/server
+client.on('guildCreate', async guild => {
+    console.log(`Bot joined a new guild: ${guild.name} (${guild.id})`);
+    const rest = new REST({ version: '10' }).setToken(TOKEN);
+    try {
+        await rest.put(Routes.applicationGuildCommands(CLIENT_ID, guild.id), { body: commandsList });
+        console.log(`✅ Commands registered successfully for new guild: ${guild.name} (${guild.id})`);
+    } catch (error) {
+        console.error(`Failed to register commands for new guild ${guild.name}:`, error.message);
     }
 });
 
