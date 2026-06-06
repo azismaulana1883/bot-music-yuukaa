@@ -791,6 +791,22 @@ app.get('/api/guilds', (req, res) => {
     res.json(ids);
 });
 
+// Search tracks on YouTube/Spotify via resolveQuery
+app.get('/api/search', async (req, res) => {
+    const { query } = req.query;
+    if (!query) {
+        return res.status(400).json({ success: false, error: 'Query parameter is required' });
+    }
+
+    try {
+        const tracks = await resolveQuery(query, 'Standalone User');
+        res.json({ success: true, tracks });
+    } catch (err) {
+        console.error('API Search Error:', err.message);
+        res.status(500).json({ success: false, error: err.message });
+    }
+});
+
 // Get status of a guild player
 app.get('/api/guilds/:guildId/status', (req, res) => {
     const { guildId } = req.params;
