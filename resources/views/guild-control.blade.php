@@ -15,20 +15,20 @@
             
             <div class="flex items-center gap-3">
                 @if($guildDetails['icon'])
-                    <img src="https://cdn.discordapp.com/icons/{{ $guildDetails['id'] }}/{{ $guildDetails['icon'] }}.png" alt="{{ $guildDetails['name'] }}" class="w-10 h-10 rounded-xl border border-slate-900">
+                    <img src="https://cdn.discordapp.com/icons/{{ $guildDetails['id'] }}/{{ $guildDetails['icon'] }}.png" alt="{{ $guildDetails['name'] }}" class="w-10 h-10 rounded-xl border border-slate-900 shrink-0">
                 @else
-                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-slate-900 to-slate-950 border border-slate-800 flex items-center justify-center font-bold text-slate-300">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-slate-900 to-slate-950 border border-slate-800 flex items-center justify-center font-bold text-slate-300 shrink-0">
                         {{ Str::upper(Str::substr($guildDetails['name'], 0, 2)) }}
                     </div>
                 @endif
                 <div>
-                    <h1 class="text-2xl font-extrabold text-white tracking-tight">{{ $guildDetails['name'] }}</h1>
+                    <h1 class="text-xl sm:text-2xl font-extrabold text-white tracking-tight">{{ $guildDetails['name'] }}</h1>
                     <p class="text-xs text-slate-500">ID: {{ $guildDetails['id'] }}</p>
                 </div>
             </div>
         </div>
 
-        <a href="{{ $botInviteUrl }}" target="_blank" class="px-4 py-2 rounded-xl bg-[#0a0814]/80 border border-slate-900 hover:border-violet-500/30 hover:bg-violet-950/10 text-sm font-semibold text-slate-300 hover:text-white transition-all duration-300 flex items-center gap-2">
+        <a href="{{ $botInviteUrl }}" target="_blank" class="w-full sm:w-auto px-4 py-2.5 sm:py-2 rounded-xl bg-[#0a0814]/80 border border-slate-900 hover:border-violet-500/30 hover:bg-violet-950/10 text-sm font-semibold text-slate-300 hover:text-white transition-all duration-300 flex items-center justify-center gap-2 self-start sm:self-auto">
             <svg class="w-4 h-4 text-[#5865F2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
             </svg>
@@ -48,7 +48,7 @@
     </div>
 
     <!-- Main Player Grid -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
         
         <!-- Left: Player & Controls (7 cols) -->
         <div class="lg:col-span-7 space-y-6">
@@ -58,7 +58,7 @@
                 <!-- Inner Layout -->
                 <div class="flex flex-col sm:flex-row items-center gap-6 relative z-10">
                     <!-- Album Art Cover -->
-                    <div class="relative w-44 h-44 shrink-0 rounded-2xl overflow-hidden shadow-2xl bg-[#0a0814] border border-slate-900 flex items-center justify-center group">
+                    <div class="relative w-36 h-36 sm:w-44 sm:h-44 shrink-0 rounded-2xl overflow-hidden shadow-2xl bg-[#0a0814] border border-slate-900 flex items-center justify-center group">
                         <img id="track-cover" src="" alt="Album Art" class="hidden w-full h-full object-cover">
                         <div id="track-cover-placeholder" class="w-full h-full bg-gradient-to-tr from-[#0a0814] to-[#120f26] flex items-center justify-center">
                             <!-- Animated Wave Visualizer -->
@@ -73,14 +73,14 @@
                     </div>
 
                     <!-- Track Details -->
-                    <div class="flex-1 min-w-0 text-center sm:text-left space-y-3">
+                    <div class="flex-1 min-w-0 text-center sm:text-left space-y-3 w-full">
                         <span id="playing-badge" class="px-2.5 py-0.5 rounded-md bg-violet-500/10 border border-violet-500/20 text-xs font-bold text-violet-400 inline-block uppercase tracking-wider shadow-sm">
                             Sedang Diputar
                         </span>
                         
                         <div>
-                            <h2 id="track-title" class="text-2xl font-extrabold text-white truncate leading-tight">Tidak ada lagu diputar</h2>
-                            <p id="track-artist" class="text-slate-400 mt-1 truncate font-medium">Hubungkan bot dan putar musik</p>
+                            <h2 id="track-title" class="text-xl sm:text-2xl font-extrabold text-white truncate leading-tight">Tidak ada lagu diputar</h2>
+                            <p id="track-artist" class="text-xs sm:text-sm text-slate-400 mt-1 truncate font-medium">Hubungkan bot dan putar musik</p>
                         </div>
 
                         <div id="track-requester-container" class="hidden text-xs text-slate-500 items-center gap-1.5 justify-center sm:justify-start">
@@ -102,49 +102,49 @@
                 </div>
 
                 <!-- Control Buttons -->
-                <div class="mt-8 flex items-center justify-center gap-6 relative z-10">
+                <div class="mt-6 sm:mt-8 flex flex-wrap items-center justify-center gap-3 sm:gap-6 relative z-10">
                     <!-- Clear Button -->
-                    <button onclick="controlAction('clear')" class="p-3 rounded-full hover:bg-violet-950/25 border border-transparent hover:border-violet-500/10 text-slate-400 hover:text-violet-300 transition-all duration-300" title="Kosongkan Antrean">
+                    <button onclick="controlAction('clear')" class="p-2.5 sm:p-3 rounded-full hover:bg-violet-950/25 border border-transparent hover:border-violet-500/10 text-slate-400 hover:text-violet-300 transition-all duration-300" title="Kosongkan Antrean">
                         <svg class="w-5.5 h-5.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                         </svg>
                     </button>
 
                     <!-- Previous Button -->
-                    <button onclick="controlAction('previous')" class="p-3 rounded-full bg-violet-950/20 hover:bg-violet-950/40 hover:scale-105 text-violet-300 transition-all duration-300 shadow-md border border-violet-500/20" title="Lagu Sebelumnya">
+                    <button onclick="controlAction('previous')" class="p-2.5 sm:p-3 rounded-full bg-violet-950/20 hover:bg-violet-950/40 hover:scale-105 text-violet-300 transition-all duration-300 shadow-md border border-violet-500/20" title="Lagu Sebelumnya">
                         <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24">
                             <path d="M11.5 12l8.5 6V6zm-9 6h2V6h-2z"/>
                         </svg>
                     </button>
 
                     <!-- Play / Pause Button -->
-                    <button id="btn-play-pause" onclick="togglePlayPause()" class="w-14 h-14 rounded-full bg-white hover:bg-violet-50 text-[#030206] hover:scale-105 transition-all duration-300 flex items-center justify-center shadow-lg shadow-violet-500/20" title="Putar / Jeda">
+                    <button id="btn-play-pause" onclick="togglePlayPause()" class="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white hover:bg-violet-50 text-[#030206] hover:scale-105 transition-all duration-300 flex items-center justify-center shadow-lg shadow-violet-500/20" title="Putar / Jeda">
                         <!-- Play Icon -->
-                        <svg id="icon-play" class="w-6 h-6 fill-current text-[#030206]" viewBox="0 0 24 24">
+                        <svg id="icon-play" class="w-5 h-5 sm:w-6 sm:h-6 fill-current text-[#030206]" viewBox="0 0 24 24">
                             <path d="M8 5v14l11-7z"/>
                         </svg>
                         <!-- Pause Icon -->
-                        <svg id="icon-pause" class="hidden w-6 h-6 fill-current text-[#030206]" viewBox="0 0 24 24">
+                        <svg id="icon-pause" class="hidden w-5 h-5 sm:w-6 sm:h-6 fill-current text-[#030206]" viewBox="0 0 24 24">
                             <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
                         </svg>
                     </button>
 
                     <!-- Skip Button -->
-                    <button onclick="controlAction('skip')" class="p-3 rounded-full bg-violet-950/20 hover:bg-violet-950/40 hover:scale-105 text-violet-300 transition-all duration-300 shadow-md border border-violet-500/20" title="Lewati Lagu">
+                    <button onclick="controlAction('skip')" class="p-2.5 sm:p-3 rounded-full bg-violet-950/20 hover:bg-violet-950/40 hover:scale-105 text-violet-300 transition-all duration-300 shadow-md border border-violet-500/20" title="Lewati Lagu">
                         <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24">
                             <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/>
                         </svg>
                     </button>
 
                     <!-- Stop Button -->
-                    <button onclick="controlAction('stop')" class="p-3 rounded-full hover:bg-violet-950/25 border border-transparent hover:border-violet-500/10 text-slate-400 hover:text-violet-300 transition-all duration-300" title="Hentikan Musik">
+                    <button onclick="controlAction('stop')" class="p-2.5 sm:p-3 rounded-full hover:bg-violet-950/25 border border-transparent hover:border-violet-500/10 text-slate-400 hover:text-violet-300 transition-all duration-300" title="Hentikan Musik">
                         <svg class="w-5.5 h-5.5 fill-current" viewBox="0 0 24 24">
                             <path d="M6 6h12v12H6z"/>
                         </svg>
                     </button>
 
                     <!-- Quit Bot Button -->
-                    <button onclick="controlAction('quit')" class="p-3 rounded-full hover:bg-rose-950/35 border border-transparent hover:border-rose-500/25 text-rose-450 hover:text-rose-400 transition-all duration-300" title="Keluarkan Bot dari Voice Channel">
+                    <button onclick="controlAction('quit')" class="p-2.5 sm:p-3 rounded-full hover:bg-rose-950/35 border border-transparent hover:border-rose-500/25 text-rose-450 hover:text-rose-400 transition-all duration-300" title="Keluarkan Bot dari Voice Channel">
                         <svg class="w-5.5 h-5.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                         </svg>
@@ -153,7 +153,7 @@
             </div>
 
             <!-- Volume & Settings Panel -->
-            <div class="glass-card rounded-2xl p-5 flex flex-col sm:flex-row items-center justify-between gap-6">
+            <div class="glass-card rounded-2xl p-5 flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-6">
                 <!-- Volume Control -->
                 <div class="flex items-center gap-4 w-full sm:max-w-xs">
                     <svg class="w-5.5 h-5.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -485,8 +485,8 @@
                             <div class="text-xs text-slate-550 truncate">${track.artist || 'Artis Tidak Diketahui'}</div>
                         </div>
                         <div class="text-xs font-semibold text-slate-550 pr-1">${formatTime(track.duration)}</div>
-                        <button type="button" onclick="controlAction('remove', { index: ${index} })" class="p-1.5 rounded-lg text-slate-400 hover:text-rose-300 hover:bg-rose-500/10 transition-colors" title="Hapus lagu ini dari antrean">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <button type="button" onclick="controlAction('remove', { index: ${index} })" class="p-2.5 sm:p-1.5 rounded-lg text-slate-400 hover:text-rose-300 hover:bg-rose-500/10 transition-colors" title="Hapus lagu ini dari antrean">
+                            <svg class="w-5 h-5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                             </svg>
                         </button>

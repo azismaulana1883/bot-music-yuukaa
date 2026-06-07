@@ -247,6 +247,7 @@ async function playNext(guildId) {
             '-f', 'bestaudio/best',
             '--no-playlist',
             '-o', '-',
+            '--limit-rate', '300K',
             '--quiet',
             '--no-warnings',
         ];
@@ -879,6 +880,7 @@ app.get('/api/stream', async (req, res) => {
             '-f', 'bestaudio/best',
             '--no-playlist',
             '-o', '-',
+            '--limit-rate', '300K',
             '--quiet',
             '--no-warnings'
         ];

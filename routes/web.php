@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
-});
+})->name('home');
 
 // OAuth Routes
 Route::get('/login/discord', [DiscordAuthController::class, 'redirect'])->name('login.discord');
@@ -44,4 +44,31 @@ Route::get('/api/music/search', function (\Illuminate\Http\Request $request) {
     } catch (\Exception $e) {
         return response()->json(['success' => false, 'error' => 'Bot is not running or unreachable'], 500);
     }
+});
+
+Route::get('/api/music/stream', function (\Illuminate\Http\Request $request) {
+    $url = $request->query('url');
+    if (!$url) {
+        return response()->json(['success' => false, 'error' => 'URL is required'], 400);
+    }
+    
+    $botUrl = env('DISCORD_BOT_API_URL', 'http://localhost:3000');
+    
+    return response()->stream(function () use ($botUrl, $url) {
+        $streamUrl = "{$botUrl}/api/stream?url=" . urlencode($url);
+        
+        @set_time_limit(0);
+        
+        $handle = @fopen($streamUrl, 'rb');
+        if ($handle) {
+            while (!feof($handle)) {
+                echo fread($handle, 16384);
+                flush();
+            }
+            fclose($handle);
+        }
+    }, 200, [
+        'Content-Type' => 'audio/mpeg',
+        'Cache-Control' => 'no-cache, must-revalidate',
+    ]);
 });

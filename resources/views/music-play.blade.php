@@ -6,19 +6,27 @@
 <div class="space-y-6">
     <!-- Header / Title -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-900/85">
-        <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-violet-600 to-indigo-600 flex items-center justify-center font-bold text-white shadow-lg shadow-violet-600/20">
-                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+        <div class="flex items-center gap-4">
+            <a href="{{ route('dashboard') }}" class="p-2 rounded-xl bg-[#0a0814]/80 border border-slate-900 hover:border-violet-500/30 hover:bg-violet-950/15 text-slate-400 hover:text-violet-350 transition-colors" title="Kembali ke Dashboard">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                 </svg>
-            </div>
-            <div>
-                <h1 class="text-2xl font-extrabold text-white tracking-tight">Yuukaa Music Player</h1>
-                <p class="text-xs text-slate-500">Mendengarkan & Kelola Antrean secara Lokal (Tanpa Discord)</p>
+            </a>
+            
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-violet-600 to-indigo-600 flex items-center justify-center font-bold text-white shadow-lg shadow-violet-600/20 shrink-0">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-xl sm:text-2xl font-extrabold text-white tracking-tight">Yuukaa Music Player</h1>
+                    <p class="text-[10px] sm:text-xs text-slate-500">Mendengarkan & Kelola Antrean secara Lokal (Tanpa Discord)</p>
+                </div>
             </div>
         </div>
         
-        <div class="px-4 py-2 rounded-xl bg-[#0a0814]/80 border border-slate-900 text-sm font-semibold text-violet-400 flex items-center gap-2">
+        <div class="px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl bg-[#0a0814]/80 border border-slate-900 text-xs sm:text-sm font-semibold text-violet-400 flex items-center gap-2 self-start sm:self-auto">
             <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
             Mode Lokal / Yuukaa
         </div>
@@ -35,7 +43,7 @@
                 <!-- Inner Layout -->
                 <div class="flex flex-col sm:flex-row items-center gap-6 relative z-10">
                     <!-- Album Art Cover -->
-                    <div class="relative w-44 h-44 shrink-0 rounded-2xl overflow-hidden shadow-2xl bg-[#0a0814] border border-slate-900 flex items-center justify-center group">
+                    <div class="relative w-36 h-36 sm:w-44 sm:h-44 shrink-0 rounded-2xl overflow-hidden shadow-2xl bg-[#0a0814] border border-slate-900 flex items-center justify-center group">
                         <img id="track-cover" src="" alt="Album Art" class="hidden w-full h-full object-cover">
                         <div id="track-cover-placeholder" class="w-full h-full bg-gradient-to-tr from-[#0a0814] to-[#120f26] flex items-center justify-center">
                             <!-- Animated Wave Visualizer -->
@@ -50,14 +58,14 @@
                     </div>
 
                     <!-- Track Details -->
-                    <div class="flex-1 min-w-0 text-center sm:text-left space-y-3">
+                    <div class="flex-1 min-w-0 text-center sm:text-left space-y-3 w-full">
                         <span id="playing-badge" class="px-2.5 py-0.5 rounded-md bg-slate-900 border border-slate-800 text-xs font-bold text-slate-500 inline-block uppercase tracking-wider shadow-sm">
                             Berhenti
                         </span>
                         
                         <div>
-                            <h2 id="track-title" class="text-2xl font-extrabold text-white truncate leading-tight">Tidak ada lagu diputar</h2>
-                            <p id="track-artist" class="text-slate-400 mt-1 truncate font-medium">Cari lagu dan tambahkan ke antrean</p>
+                            <h2 id="track-title" class="text-xl sm:text-2xl font-extrabold text-white truncate leading-tight">Tidak ada lagu diputar</h2>
+                            <p id="track-artist" class="text-xs sm:text-sm text-slate-400 mt-1 truncate font-medium">Cari lagu dan tambahkan ke antrean</p>
                         </div>
 
                         <div id="track-requester-container" class="hidden text-xs text-slate-500 items-center gap-1.5 justify-center sm:justify-start">
@@ -79,42 +87,42 @@
                 </div>
 
                 <!-- Control Buttons -->
-                <div class="mt-8 flex items-center justify-center gap-6 relative z-10">
+                <div class="mt-6 sm:mt-8 flex flex-wrap items-center justify-center gap-3 sm:gap-6 relative z-10">
                     <!-- Clear Button -->
-                    <button onclick="clearQueue()" class="p-3 rounded-full hover:bg-violet-950/25 border border-transparent hover:border-violet-500/10 text-slate-400 hover:text-violet-300 transition-all duration-300" title="Kosongkan Antrean">
+                    <button onclick="clearQueue()" class="p-2.5 sm:p-3 rounded-full hover:bg-violet-950/25 border border-transparent hover:border-violet-500/10 text-slate-400 hover:text-violet-300 transition-all duration-300" title="Kosongkan Antrean">
                         <svg class="w-5.5 h-5.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                         </svg>
                     </button>
 
                     <!-- Previous Button -->
-                    <button onclick="playPrevious()" class="p-3 rounded-full bg-violet-950/20 hover:bg-violet-950/40 hover:scale-105 text-violet-300 transition-all duration-300 shadow-md border border-violet-500/20" title="Lagu Sebelumnya">
+                    <button onclick="playPrevious()" class="p-2.5 sm:p-3 rounded-full bg-violet-950/20 hover:bg-violet-950/40 hover:scale-105 text-violet-300 transition-all duration-300 shadow-md border border-violet-500/20" title="Lagu Sebelumnya">
                         <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24">
                             <path d="M11.5 12l8.5 6V6zm-9 6h2V6h-2z"/>
                         </svg>
                     </button>
 
                     <!-- Play / Pause Button -->
-                    <button id="btn-play-pause" onclick="togglePlayPause()" class="w-14 h-14 rounded-full bg-white hover:bg-violet-50 text-[#030206] hover:scale-105 transition-all duration-300 flex items-center justify-center shadow-lg shadow-violet-500/20" title="Putar / Jeda">
+                    <button id="btn-play-pause" onclick="togglePlayPause()" class="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white hover:bg-violet-50 text-[#030206] hover:scale-105 transition-all duration-300 flex items-center justify-center shadow-lg shadow-violet-500/20" title="Putar / Jeda">
                         <!-- Play Icon -->
-                        <svg id="icon-play" class="w-6 h-6 fill-current text-[#030206]" viewBox="0 0 24 24">
+                        <svg id="icon-play" class="w-5 h-5 sm:w-6 sm:h-6 fill-current text-[#030206]" viewBox="0 0 24 24">
                             <path d="M8 5v14l11-7z"/>
                         </svg>
                         <!-- Pause Icon -->
-                        <svg id="icon-pause" class="hidden w-6 h-6 fill-current text-[#030206]" viewBox="0 0 24 24">
+                        <svg id="icon-pause" class="hidden w-5 h-5 sm:w-6 sm:h-6 fill-current text-[#030206]" viewBox="0 0 24 24">
                             <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
                         </svg>
                     </button>
 
                     <!-- Skip Button -->
-                    <button onclick="playNext()" class="p-3 rounded-full bg-violet-950/20 hover:bg-violet-950/40 hover:scale-105 text-violet-300 transition-all duration-300 shadow-md border border-violet-500/20" title="Lewati Lagu">
+                    <button onclick="playNext()" class="p-2.5 sm:p-3 rounded-full bg-violet-950/20 hover:bg-violet-950/40 hover:scale-105 text-violet-300 transition-all duration-300 shadow-md border border-violet-500/20" title="Lewati Lagu">
                         <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24">
                             <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/>
                         </svg>
                     </button>
 
                     <!-- Stop Button -->
-                    <button onclick="stopPlayback()" class="p-3 rounded-full hover:bg-violet-950/25 border border-transparent hover:border-violet-500/10 text-slate-400 hover:text-violet-300 transition-all duration-300" title="Hentikan Musik">
+                    <button onclick="stopPlayback()" class="p-2.5 sm:p-3 rounded-full hover:bg-violet-950/25 border border-transparent hover:border-violet-500/10 text-slate-400 hover:text-violet-300 transition-all duration-300" title="Hentikan Musik">
                         <svg class="w-5.5 h-5.5 fill-current" viewBox="0 0 24 24">
                             <path d="M6 6h12v12H6z"/>
                         </svg>
@@ -202,6 +210,26 @@
     let volume = 50;
 
     const audio = document.getElementById('audio-player');
+
+    // Unlock HTML5 Audio context for mobile browsers (iOS/Android Safari/Chrome)
+    function unlockAudio() {
+        if (audio.paused && !audio.src) {
+            // Set minimal silent WAV audio source
+            audio.src = "data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAAA";
+            audio.play().then(() => {
+                audio.pause();
+                audio.src = '';
+                console.log("Audio elements successfully unlocked for mobile autoplay.");
+            }).catch(err => {
+                console.warn("Failed to unlock audio element:", err);
+            });
+        }
+        // Remove event listeners once triggered
+        document.removeEventListener('click', unlockAudio);
+        document.removeEventListener('touchstart', unlockAudio);
+    }
+    document.addEventListener('click', unlockAudio);
+    document.addEventListener('touchstart', unlockAudio);
 
     // IMPORTANT: Clear localStorage on load/refresh so queue is reset
     localStorage.removeItem('music_play_queue');
@@ -334,7 +362,7 @@
     }
 
     // Play a specific track
-    function startTrack(track) {
+    async function startTrack(track) {
         if (currentTrack) {
             history.push(currentTrack);
             if (history.length > 20) history.shift();
@@ -344,15 +372,10 @@
         playbackTime = 0;
         isPlaying = true;
         
-        // Setup native audio source from local stream server
-        audio.src = `http://localhost:3000/api/stream?url=${encodeURIComponent(track.url)}`;
-        audio.volume = volume / 100;
-        audio.play().catch(err => {
-            console.warn("Playback blocked by browser autoplay policy:", err.message);
-            showNotification("Putar audio diblokir browser. Silakan klik tombol play untuk memulai.", "info");
-        });
+        // Show buffering notification
+        showNotification("Mengunduh & memproses audio...", "info");
         
-        // UI Updates
+        // UI Updates to show track details immediately
         document.getElementById('track-title').textContent = track.title;
         document.getElementById('track-artist').textContent = track.artist;
         
@@ -371,15 +394,60 @@
         document.getElementById('track-requester-container').classList.add('flex');
         document.getElementById('track-requester').textContent = track.requestedBy;
 
-        document.getElementById('playing-badge').textContent = 'Sedang Diputar';
-        document.getElementById('playing-badge').className = 'px-2.5 py-0.5 rounded-md bg-violet-500/10 border border-violet-500/20 text-xs font-bold text-violet-400 inline-block uppercase tracking-wider shadow-sm';
+        document.getElementById('playing-badge').textContent = 'Memuat...';
+        document.getElementById('playing-badge').className = 'px-2.5 py-0.5 rounded-md bg-indigo-500/10 border border-indigo-500/20 text-xs font-bold text-indigo-400 inline-block uppercase tracking-wider shadow-sm';
 
         document.getElementById('icon-play').classList.add('hidden');
         document.getElementById('icon-pause').classList.remove('hidden');
 
-        updateVisualizer(true);
+        updateVisualizer(false);
         renderQueue();
         saveToStorage();
+
+        try {
+            const streamUrl = `/api/music/stream?url=${encodeURIComponent(track.url)}`;
+            const response = await fetch(streamUrl);
+            
+            if (!response.ok) {
+                throw new Error("Gagal mengambil stream audio");
+            }
+            
+            const blob = await response.blob();
+
+            // If user skipped, stopped or page changed during fetch
+            if (!currentTrack || currentTrack.url !== track.url) {
+                return;
+            }
+
+            // Revoke old blob URL to free memory
+            if (audio.src && audio.src.startsWith('blob:')) {
+                URL.revokeObjectURL(audio.src);
+            }
+
+            const blobUrl = URL.createObjectURL(blob);
+            audio.src = blobUrl;
+            audio.volume = volume / 100;
+
+            if (isPlaying) {
+                await audio.play();
+                document.getElementById('playing-badge').textContent = 'Sedang Diputar';
+                document.getElementById('playing-badge').className = 'px-2.5 py-0.5 rounded-md bg-violet-500/10 border border-violet-500/20 text-xs font-bold text-violet-400 inline-block uppercase tracking-wider shadow-sm';
+                document.getElementById('icon-play').classList.add('hidden');
+                document.getElementById('icon-pause').classList.remove('hidden');
+                updateVisualizer(true);
+                showNotification(`Memutar: ${track.title}`);
+            } else {
+                document.getElementById('playing-badge').textContent = 'Jeda';
+                document.getElementById('playing-badge').className = 'px-2.5 py-0.5 rounded-md bg-amber-500/10 border border-amber-500/20 text-xs font-bold text-amber-500 inline-block uppercase tracking-wider';
+                document.getElementById('icon-play').classList.remove('hidden');
+                document.getElementById('icon-pause').classList.add('hidden');
+                updateVisualizer(false);
+            }
+        } catch (err) {
+            console.error("Playback failed:", err);
+            showNotification("Gagal memutar audio: " + err.message, "error");
+            playNext(); // Skip on error
+        }
     }
 
     // Toggle Play/Pause
@@ -395,14 +463,18 @@
 
         isPlaying = !isPlaying;
         if (isPlaying) {
-            audio.play().catch(err => console.warn(err));
+            if (audio.src) {
+                audio.play().catch(err => console.warn(err));
+            }
             document.getElementById('icon-play').classList.add('hidden');
             document.getElementById('icon-pause').classList.remove('hidden');
             document.getElementById('playing-badge').textContent = 'Sedang Diputar';
             document.getElementById('playing-badge').className = 'px-2.5 py-0.5 rounded-md bg-violet-500/10 border border-violet-500/20 text-xs font-bold text-violet-400 inline-block uppercase tracking-wider shadow-sm';
             updateVisualizer(true);
         } else {
-            audio.pause();
+            if (audio.src) {
+                audio.pause();
+            }
             document.getElementById('icon-play').classList.remove('hidden');
             document.getElementById('icon-pause').classList.add('hidden');
             document.getElementById('playing-badge').textContent = 'Jeda';
@@ -431,10 +503,12 @@
     });
 
     audio.addEventListener('ended', () => {
+        if (!currentTrack) return;
         playNext();
     });
 
     audio.addEventListener('error', (e) => {
+        if (!currentTrack) return;
         console.error("Audio streaming error:", e);
         showNotification("Gagal memuat streaming audio dari server.", "error");
         playNext(); // Skip to next track on error
@@ -471,6 +545,11 @@
         currentTrack = null;
         playbackTime = 0;
         audio.pause();
+        
+        // Revoke blob URL to free memory
+        if (audio.src && audio.src.startsWith('blob:')) {
+            URL.revokeObjectURL(audio.src);
+        }
         audio.src = '';
 
         // Reset UI
@@ -531,8 +610,8 @@
                         <div class="text-xs text-slate-550 truncate">${track.artist}</div>
                     </div>
                     <div class="text-xs font-semibold text-slate-550 pr-1">${formatTime(track.duration)}</div>
-                    <button type="button" onclick="removeTrack(${index})" class="p-1.5 rounded-lg text-slate-400 hover:text-rose-300 hover:bg-rose-500/10 transition-colors" title="Hapus lagu ini dari antrean">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <button type="button" onclick="removeTrack(${index})" class="p-2.5 sm:p-1.5 rounded-lg text-slate-400 hover:text-rose-300 hover:bg-rose-500/10 transition-colors" title="Hapus lagu ini dari antrean">
+                        <svg class="w-5 h-5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                         </svg>
                     </button>
